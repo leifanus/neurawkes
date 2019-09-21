@@ -80,12 +80,12 @@ def main():
     )
     parser.add_argument(
         '-tp', '--TrackPeriod', #required=False,
-        default = 1000, type = int,
+        default = 100, type = int,
         help='Track period of training'
     )
     parser.add_argument(
         '-me', '--MaxEpoch', #required=False,
-        default = 50, type = int,
+        default = 1, type = int,
         help='Max epoch number of training'
     )
     parser.add_argument(
@@ -239,6 +239,8 @@ def main():
     #)
     if 'meme' in args.FileData:
         tag_track = '_meme'
+    elif 'LOB' in args.FileData:
+        tag_track = '_LOB'
     elif 'retweet' in args.FileData:
         tag_track = '_retweet'
     elif 'mimic' in args.FileData:

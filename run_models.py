@@ -14,6 +14,7 @@ import theano
 from theano import sandbox
 import theano.tensor as tensor
 import os
+import pandas as pd
 #import scipy.io
 from collections import defaultdict
 from theano.tensor.shared_randomstreams import RandomStreams
@@ -1486,7 +1487,7 @@ def train_generalized_neural_hawkes_ctsm_time(
                             data_process.seq_sims_mask_numpy
                         )
                     else:
-                        log_likelihood_type_predict_numpy, num_of_errors_numpy, square_errors_numpy, num_of_events_numpy = control.model_dev(
+                        log_likelihood_type_predict_numpy, num_of_errors_numpy, square_errors_numpy, num_of_events_numpy, time_pred, type_pred = control.model_dev(
                             data_process.seq_type_event_numpy,
                             data_process.seq_time_values_numpy,
                             data_process.seq_mask_numpy,
@@ -1495,6 +1496,13 @@ def train_generalized_neural_hawkes_ctsm_time(
                         #print "gradient absoluate value : ", grad_numpy
                         #
                     #
+                    time1 = str(time.time())
+                    time_pred = pd.DataFrame(time_pred)
+                    time_pred.to_csv('./tmp/time_pred_' + time1 + '.csv')
+                    type_pred = pd.DataFrame(type_pred)
+                    type_pred.to_csv('./tmp/type_pred_' + time1 + '.csv')
+
+
                     total_log_likelihood_dev += log_likelihood_numpy
                     total_log_likelihood_time_dev += log_likelihood_time_numpy
                     total_log_likelihood_type_dev += log_likelihood_type_numpy

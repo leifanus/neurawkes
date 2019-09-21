@@ -556,7 +556,9 @@ class ControlNeuralHawkesAdaptiveBaseCTSM_time(object):
                     self.hawkes_ctsm.log_likelihood_type_predict,
                     self.hawkes_ctsm.num_of_errors,
                     self.hawkes_ctsm.square_errors,
-                    self.hawkes_ctsm.num_of_events
+                    self.hawkes_ctsm.num_of_events,
+                    self.hawkes_ctsm.time_pred,
+                    self.hawkes_ctsm.type_pred
                     #self.hawkes_ctsm.abs_grad_params
                     #
                 ],

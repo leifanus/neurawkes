@@ -588,6 +588,8 @@ class NeuralHawkesCTLSTM(object):
     def __init__(self, settings):
         self.size_batch = settings['size_batch']
         self.coef_l2 = settings['coef_l2']
+        self.time_pred = None
+        self.type_pred = None
         #
         #
         print "initializing Neural Hawkes with Continuous-time LSTM ... "
@@ -1639,6 +1641,8 @@ class NeuralHawkesCTLSTM(object):
             diff_type >= numpy.float32(0.5),
             numpy.float32(1.0), numpy.float32(0.0)
         )
+        self.time_pred = time_prediction
+        self.type_pred = type_prediction
         self.num_of_errors = tensor.sum(diff_type)
         #
         self.cost_to_optimize = -self.log_likelihood_type_predict / self.num_of_events + self.square_errors / self.num_of_events + self.term_reg

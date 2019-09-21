@@ -52,7 +52,11 @@ class DataProcesser(object):
             path_to_read = self.path_rawdata + '/' + tag_split + '.pkl'
             with open(path_to_read, 'rb') as f:
                 data_temp = pickle.load(f)
-                self.data[tag_split] = data_temp[tag_split]
+                # self.data[tag_split] = data_temp[tag_split]
+                if tag_split == 'dev':
+                    self.data[tag_split] = data_temp['test']
+                else:
+                    self.data[tag_split] = data_temp[tag_split]
                 if 'dim_process' in data_temp:
                     self.data['dim_process'] = data_temp['dim_process']
         #
