@@ -178,13 +178,9 @@ def main():
     args.MultipleTrain = numpy.int32(args.MultipleTrain)
     args.MultipleDev = numpy.int32(args.MultipleDev)
     #
-    if args.LossType == 'prediction':
-        assert(args.WhatTrack == 'rmse' or args.WhatTrack == 'rate')
-    else:
-        assert(args.WhatTrack == 'loss')
-    #
+
     args.LearnRate = numpy.float32(args.LearnRate)
-    assert(args.LearnRate > 0.0)
+
     #
     if args.PartialPredict == 0:
         args.PartialPredict = False
@@ -211,20 +207,6 @@ def main():
     #
     id_process = os.getpid()
     time_current = datetime.datetime.now().isoformat()
-    #
-    flag_1 = (
-        args.Model == 'hawkes' or args.Model == 'hawkesinhib' or args.Model == 'neural' or args.Model == 'neuralgeneral' or args.Model == 'neuraladapt' or args.Model == 'neuraltime' or args.Model == 'neuralgeneraltime' or args.Model == 'neuraladapttime'
-    )
-    flag_2 = (
-        args.Model == 'nanmodel'
-    )
-    flag_3 = (
-        args.Model == 'neuraladapttimescale' or args.Model == 'hawkesinhibscale' or args.Model == 'neuralreduce' or args.Model == 'conttime'
-    )
-    #
-    # conttime is the one with continuous time LSTM
-    #
-    assert(flag_1 or flag_2 or flag_3)
 
     # we stop using neuralsimple
     # +time means we encode time using neural networks
@@ -294,16 +276,6 @@ def main():
     print ("PredictFirst is: %s" % args.PredictFirst )
     print ("PredictLambda is: %s" % args.PredictLambda )
     #
-    flag_show_1 = (
-        args.Model == 'hawkesinhib' or args.Model == 'neural' or args.Model == 'neuralgeneral' or args.Model == 'neuraladapt' or args.Model == 'neuralsimple' or args.Model == 'neuraltime' or args.Model == 'neuralgeneraltime' or args.Model == 'neuraladapttime'
-    )
-    flag_show_2 = (
-        args.Model == 'hawkesinhibscale' or args.Model == 'neuraladapttimescale' or args.Model == 'neuralreduce' or args.Model == 'conttime'
-    )
-    #
-    if (flag_show_1 and flag_show_2):
-        print ("Multiple for training is : %s" % args.MultipleTrain)
-        print ("Multiple for dev is : %s" % args.MultipleDev)
     #
     dict_args = {
         'PID': id_process,
@@ -362,60 +334,17 @@ def main():
             input_train['predict_first'] = True
         else:
             input_train['predict_first'] = False
-    #
-    #
-    flag_multiple_1 = (
-        args.Model == 'hawkesinhib' or args.Model == 'neural' or args.Model == 'neuralgeneral' or args.Model == 'neuraladapt' or args.Model == 'neuralsimple' or args.Model == 'neuraltime' or args.Model == 'neuralgeneraltime' or args.Model == 'neuraladapttime'
+
+
+    input_train['multiple_sample_for_train'] = numpy.int32(
+        args.MultipleTrain
     )
-    flag_multiple_2 = (
-        args.Model == 'hawkesinhibscale' or args.Model == 'neuraladapttimescale' or args.Model == 'neuralreduce' or args.Model == 'conttime'
+    input_train['multiple_sample_for_dev'] = numpy.int32(
+        args.MultipleDev
     )
-    #
-    if (flag_multiple_1 or flag_multiple_2):
-        input_train['multiple_sample_for_train'] = numpy.int32(
-            args.MultipleTrain
-        )
-        input_train['multiple_sample_for_dev'] = numpy.int32(
-            args.MultipleDev
-        )
-    #
-    if args.Model == 'hawkes':
-        run_models.train_hawkes_ctsm(input_train)
-    elif args.Model == 'hawkesinhib' or args.Model == 'hawkesinhibscale':
-        run_models.train_hawkesinhib_ctsm(input_train)
-    elif args.Model == 'neural':
-        run_models.train_neural_hawkes_ctsm(input_train)
-    elif args.Model == 'neuralgeneral':
-        run_models.train_generalized_neural_hawkes_ctsm(
-            input_train, tag_neural_type = 'general'
-        )
-    elif args.Model == 'neuraladapt':
-        run_models.train_generalized_neural_hawkes_ctsm(
-            input_train, tag_neural_type = 'adaptive'
-        )
-    elif args.Model == 'neuralsimple':
-        run_models.train_generalized_neural_hawkes_ctsm(
-            input_train, tag_neural_type = 'simple'
-        )
-    elif args.Model == 'neuraltime':
-        run_models.train_neural_hawkes_ctsm_time(
-            input_train
-        )
-    elif args.Model == 'neuralgeneraltime':
-        run_models.train_generalized_neural_hawkes_ctsm_time(
-            input_train, tag_neural_type = 'general'
-        )
-    elif args.Model == 'neuraladapttime' or args.Model == 'neuraladapttimescale' or args.Model == 'neuralreduce' or args.Model == 'conttime':
-        if args.DevIncludedSetting:
-            run_models.train_generalized_neural_hawkes_ctsm_time_DevIncludedSetting(
-                input_train, tag_neural_type = 'adaptive'
-            )
-        else:
-            run_models.train_generalized_neural_hawkes_ctsm_time(
-                input_train, tag_neural_type = 'adaptive'
-            )
-    else:
-        print "Model not implemented yet !!! "
     #
 
+    run_models.train_generalized_neural_hawkes_ctsm_time(
+                input_train, tag_neural_type = 'adaptive'
+    )
 if __name__ == "__main__": main()
